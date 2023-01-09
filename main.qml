@@ -14,13 +14,10 @@ Window {
        anchors.fill: mainWindow;
        state: "rightState"
 
-       Text{
-           id: txt
-           anchors.centerIn: parent
-       }
+
 
        Rectangle{
-           id: rectangleLeft
+           id: rectangleLeft           
            x: 100
            y: 200
            color: "lightgrey"
@@ -32,11 +29,19 @@ Window {
 
            MouseArea{
                anchors.fill: rectangleLeft
-               onClicked: circle.x -= 30
+               onClicked:{
+
+                   if(circle.x <= rectangleLeft.x + 100)
+                   {
+                       scene.state = "leftState"
+                   }
+                   else
+                   {
+                       circle.x -= 30
+                   }
+
+               }
            }
-
-
-
 
        }
 
@@ -53,7 +58,7 @@ Window {
 
            MouseArea{
                anchors.fill: rectangleRight
-               onClicked: scene.state = "rectangleLeft"
+               onClicked: scene.state = "rightState"
            }
        }
 
@@ -75,22 +80,15 @@ Window {
                PropertyChanges {
                    target: circle
                    x: rectangleRight.x + 5
+               }
 
-               }
-               PropertyChanges{
-                   target: txt
-                   text: "Move"
-               }
+
            },
            State {
                name: "leftState"
                PropertyChanges {
                    target: circle
                    x: rectangleLeft.x + 5
-               }
-               PropertyChanges{
-                   target: txt
-                   text: "Return"
                }
 
            }
@@ -100,7 +98,23 @@ Window {
            Transition {
                from: "rightState"
                to: "leftState"
+               NumberAnimation {
+                   properties: "x,y"
+                   duration: 1000
+                   easing.type: Easing.CosineCurve
+               }
+           },
 
+           Transition {
+               from: "leftState"
+               to: "rightState"
+
+
+               NumberAnimation {
+                   properties: "x,y"
+                   duration: 1000
+                   easing.type: Easing.InOutBounce
+               }
            }
        ]
 
